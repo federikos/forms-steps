@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import './App.css';
 import shortid from 'shortid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 function westEuropeanDateToMilliseconds(dateString) {
   const arr = dateString.split('.');
@@ -11,7 +14,8 @@ function westEuropeanDateToMilliseconds(dateString) {
 function App() {
   const [ currentData, setCurrentData ] = useState({
     date: '',
-    km: ''
+    km: '',
+    disabled: true,
   });
 
   const [tableData, setTableData ] = useState([]);
@@ -36,14 +40,13 @@ function App() {
           if (currentData.date === row.date) {
             shouldAddCurrentData = false;
             return {...row, km: parseInt(row.km) + parseInt(currentData.km)}
-          } else {
-            return {...row}
           }
+          return {...row}
         })
-        return shouldAddCurrentData ? [...newData, {...currentData, disabled: true, id: shortid.generate()}] : [...newData];
-      } else {
-        return [{...currentData, disabled: true, id: shortid.generate()}]
+        return shouldAddCurrentData ? [...newData, {...currentData, id: shortid.generate()}] : [...newData];
       }
+
+      return [{...currentData, id: shortid.generate()}]
     })
   };
 
@@ -80,41 +83,47 @@ function App() {
   return (
     <div className="App">
       <form className="form" onSubmit={handleSubmit}>
-        <label htmlFor='date'>Дата (ДД.ММ.ГГ)</label>
-        <input id='date' name='date' type="text" value={currentData.date} onChange={handleChange}/>
-        <label htmlFor='km'>Пройдено км</label>
-        <input id='km' name='km' type="text" value={currentData.km} onChange={handleChange}/>
-        <button type="submit" className="btn">ОК</button>
-        <table>
-          <thead>
-            <tr>
-              <th>Дата (ДД.ММ.ГГ)</th>
-              <th>Пройдено км</th>
-              <th>Действия</th>
-            </tr>
-          </thead>
-          <tbody>
-            { tableData &&
-              tableData
-                .sort((a, b) => {
-                  return westEuropeanDateToMilliseconds(b.date) - westEuropeanDateToMilliseconds(a.date)
-                })
-                  .map(row => {
-                    return(
-                    <tr key={row.id}>
-                      <td><input name='date' value={row.date} disabled={row.disabled} onChange={e => handleInputEdit(e, row.id)}></input></td>
-                      <td><input name='km' value={row.km} disabled={row.disabled} onChange={e => handleInputEdit(e, row.id)}></input></td>
-                      <td>
-                        <button className="edit" onClick={e => handleSwitchEdit(e, row.id)}>edit</button>
-                        <button className="delete" onClick={e => handleDelete(e, row.id)}>delete</button>
-                      </td>
-                    </tr>
-                    )
-                  })
-            }
-          </tbody>
-        </table> 
+        <div className="input-wrapper">
+          <label htmlFor='date'>Дата (ДД.ММ.ГГ)</label>
+          <input id='date' name='date' type="text" value={currentData.date} onChange={handleChange}/>
+        </div>
+        <div className="input-wrapper">
+          <label htmlFor='km'>Пройдено км</label>
+          <input id='km' name='km' type="text" value={currentData.km} onChange={handleChange}/>
+        </div>
+        <button type="submit" className="btn-ok">ОК</button>
       </form>
+      <table>
+        <thead>
+          <tr>
+            <th>Дата (ДД.ММ.ГГ)</th>
+            <th>Пройдено км</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          { tableData &&
+            tableData
+              .sort((a, b) => {
+                return westEuropeanDateToMilliseconds(b.date) - westEuropeanDateToMilliseconds(a.date)
+              })
+                .map(row => {
+                  return(
+                  <tr key={row.id}>
+                    <td><input name='date' value={row.date} disabled={row.disabled} onChange={e => handleInputEdit(e, row.id)}></input></td>
+                    <td><input name='km' value={row.km} disabled={row.disabled} onChange={e => handleInputEdit(e, row.id)}></input></td>
+                    <td>
+                      <button className="edit" onClick={e => handleSwitchEdit(e, row.id)} aria-label='edit'><FontAwesomeIcon icon={faEdit} /></button>
+                      <button className="delete" onClick={e => handleDelete(e, row.id)} aria-label='delete'><FontAwesomeIcon icon={faTrashAlt} /></button>
+                    
+              
+                    </td>
+                  </tr>
+                  )
+                })
+          }
+        </tbody>
+      </table> 
     </div>
   );
 }
