@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
 import './App.css';
 import shortid from 'shortid';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
-
-function westEuropeanDateToMilliseconds(dateString) {
-  const arr = dateString.split('.');
-  const parsableString = `${arr[1]}/${arr[0]}/${arr[2]}`;
-  return new Date(parsableString).getTime();
-}
+import Form from './Form';
+import Table from './Table';
 
 function App() {
   const [ currentData, setCurrentData ] = useState({
@@ -82,48 +75,8 @@ function App() {
 
   return (
     <div className="App">
-      <form className="form" onSubmit={handleSubmit}>
-        <div className="input-wrapper">
-          <label htmlFor='date'>Дата (ДД.ММ.ГГ)</label>
-          <input id='date' name='date' type="text" value={currentData.date} onChange={handleChange}/>
-        </div>
-        <div className="input-wrapper">
-          <label htmlFor='km'>Пройдено км</label>
-          <input id='km' name='km' type="text" value={currentData.km} onChange={handleChange}/>
-        </div>
-        <button type="submit" className="btn-ok">ОК</button>
-      </form>
-      <table>
-        <thead>
-          <tr>
-            <th>Дата (ДД.ММ.ГГ)</th>
-            <th>Пройдено км</th>
-            <th>Действия</th>
-          </tr>
-        </thead>
-        <tbody>
-          { tableData &&
-            tableData
-              .sort((a, b) => {
-                return westEuropeanDateToMilliseconds(b.date) - westEuropeanDateToMilliseconds(a.date)
-              })
-                .map(row => {
-                  return(
-                  <tr key={row.id}>
-                    <td><input name='date' value={row.date} disabled={row.disabled} onChange={e => handleInputEdit(e, row.id)}></input></td>
-                    <td><input name='km' value={row.km} disabled={row.disabled} onChange={e => handleInputEdit(e, row.id)}></input></td>
-                    <td>
-                      <button className="edit" onClick={e => handleSwitchEdit(e, row.id)} aria-label='edit'><FontAwesomeIcon icon={faEdit} /></button>
-                      <button className="delete" onClick={e => handleDelete(e, row.id)} aria-label='delete'><FontAwesomeIcon icon={faTrashAlt} /></button>
-                    
-              
-                    </td>
-                  </tr>
-                  )
-                })
-          }
-        </tbody>
-      </table> 
+      <Form handleChange={handleChange} handleSubmit={handleSubmit} currentData={currentData} />
+      <Table tableData={tableData} handleDelete={handleDelete} handleSwitchEdit={handleSwitchEdit} handleInputEdit={handleInputEdit} />
     </div>
   );
 }
