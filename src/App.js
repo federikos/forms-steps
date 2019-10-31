@@ -6,25 +6,28 @@ import Table from './Table';
 
 function App() {
   const [tableData, setTableData ] = useState([]);
+  const [editMode, setEditMode] = useState(false);
 
   const handleSubmit = (e, currentData) => {
     e.preventDefault();
     setTableData(prevData => {
-      
-      if (prevData.length) {
-        let shouldAddCurrentData = true;
+
+      const containsCurrentDate = Boolean(prevData.filter(row => row.date === currentData.date).length);
+
+      if (containsCurrentDate) {
         const newData = prevData.map(row => {
           if (currentData.date === row.date) {
-            shouldAddCurrentData = false;
+            if (editMode) {
+              return {...row, date: currentData.date, km: currentData.km}
+            }
             return {...row, km: parseInt(row.km) + parseInt(currentData.km)}
           }
           return {...row}
         });
 
-        return shouldAddCurrentData ? [...newData, {...currentData, id: shortid.generate()}] : [...newData];
+        return newData;
       }
-
-      return [{...currentData, id: shortid.generate()}]
+      return [...prevData, {...currentData, id: shortid.generate()}]
     })
   };
 
@@ -34,30 +37,21 @@ function App() {
     })
   }
 
-  const handleInputChange = (e, id) => {
-    e.preventDefault();
-    const {value, name} = e.currentTarget;
-
-    setTableData(prevData => {
-      return prevData.map(row => {
-        if(row.id === id) {
-          //Если нажата кнопка-переключатель Edit, переключаем значение disabled для строки таблицы
-          if (name === 'switch-edit') {
-            return {...row, disabled: !row.disabled};
-          }
-          //Иначе устанавливаем новое значение из поля input
-          return {...row, [name]: value}
-        }
-        //Остальные строки с другим id пропускаем
-        return {...row}
-      });
-    })
-  }
+  // const handleEdit = (e, id) => {
+  //   e.preventDefault();
+  //   setEditMode(prevEditMode => !prevEditMode);
+  // }
 
   return (
     <div className="App">
-      <Form handleSubmit={handleSubmit} />
-      <Table tableData={tableData} handleDelete={handleDelete} handleInputChange={handleInputChange} />
+      <Form 
+      handleSubmit={handleSubmit} 
+      />
+      <Table 
+      tableData={tableData} 
+      handleDelete={handleDelete} 
+      // handleEdit={handleEdit} 
+      />
     </div>
   );
 }

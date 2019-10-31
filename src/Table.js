@@ -11,7 +11,7 @@ function westEuropeanDateToMilliseconds(dateString) {
 }
 
 const Table = props => {
-  const { tableData, handleDelete, handleInputChange } = props;
+  const { tableData, handleDelete, handleEdit } = props;
   return (
     <table>
       <thead>
@@ -31,13 +31,13 @@ const Table = props => {
                 return(
                   <tr key={row.id}>
                     <td>
-                      <input name='date' value={row.date} disabled={row.disabled} onChange={e => handleInputChange(e, row.id)} />
+                      <p>{row.date}</p>
                     </td>
                     <td>
-                      <input name='km' value={row.km} disabled={row.disabled} onChange={e => handleInputChange(e, row.id)} />
+                      <p>{row.km}</p>
                     </td>
                     <td>
-                      <button name="switch-edit" className="edit" onClick={e => handleInputChange(e, row.id)} aria-label='edit'>
+                      <button disabled name="switch-edit" className="edit" onClick={e => handleEdit(e, row.id)} aria-label='edit'>
                         <FontAwesomeIcon icon={faEdit} />
                       </button>
                       <button className="delete" onClick={e => handleDelete(e, row.id)} aria-label='delete'>

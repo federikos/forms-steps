@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const Form = props => {
   const {handleSubmit} = props;
-  
+
   const [ currentData, setCurrentData ] = useState({
     date: '',
     km: '',
@@ -19,6 +19,7 @@ const Form = props => {
       }
     })
   }
+  
   return (
     <form className="form" onSubmit={(e) => handleSubmit(e, currentData)}>
       <div className="input-wrapper">
