@@ -1,10 +1,26 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 
 const Form = props => {
-  const { handleSubmit, handleChange, currentData } = props;
+  const {handleSubmit} = props;
+  
+  const [ currentData, setCurrentData ] = useState({
+    date: '',
+    km: '',
+    disabled: true,
+  });
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setCurrentData(prevData => {
+      return {
+        ...prevData,
+        [name]: value,
+      }
+    })
+  }
   return (
-    <form className="form" onSubmit={handleSubmit}>
+    <form className="form" onSubmit={(e) => handleSubmit(e, currentData)}>
       <div className="input-wrapper">
         <label htmlFor='date'>Дата (ДД.ММ.ГГ)</label>
         <input id='date' name='date' type="text" value={currentData.date} onChange={handleChange}/>
@@ -20,15 +36,6 @@ const Form = props => {
 
 Form.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  currentData: PropTypes.shape({
-    date: PropTypes.string.isRequired,
-    km: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]).isRequired,
-    disabled: PropTypes.bool.isRequired,
-  }).isRequired,
 };
 
 export default Form;

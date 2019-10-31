@@ -11,7 +11,7 @@ function westEuropeanDateToMilliseconds(dateString) {
 }
 
 const Table = props => {
-  const { tableData, handleDelete, handleInputEdit, handleSwitchEdit } = props;
+  const { tableData, handleDelete, handleInputChange } = props;
   return (
     <table>
       <thead>
@@ -31,13 +31,13 @@ const Table = props => {
                 return(
                   <tr key={row.id}>
                     <td>
-                      <input name='date' value={row.date} disabled={row.disabled} onChange={e => handleInputEdit(e, row.id)} />
+                      <input name='date' value={row.date} disabled={row.disabled} onChange={e => handleInputChange(e, row.id)} />
                     </td>
                     <td>
-                      <input name='km' value={row.km} disabled={row.disabled} onChange={e => handleInputEdit(e, row.id)} />
+                      <input name='km' value={row.km} disabled={row.disabled} onChange={e => handleInputChange(e, row.id)} />
                     </td>
                     <td>
-                      <button className="edit" onClick={e => handleSwitchEdit(e, row.id)} aria-label='edit'>
+                      <button name="switch-edit" className="edit" onClick={e => handleInputChange(e, row.id)} aria-label='edit'>
                         <FontAwesomeIcon icon={faEdit} />
                       </button>
                       <button className="delete" onClick={e => handleDelete(e, row.id)} aria-label='delete'>
@@ -66,8 +66,7 @@ Table.propTypes = {
     }).isRequired,
   ),
   handleDelete: PropTypes.func.isRequired, 
-  handleInputEdit: PropTypes.func.isRequired, 
-  handleSwitchEdit: PropTypes.func.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
 };
 
 export default Table;

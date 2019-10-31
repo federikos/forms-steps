@@ -5,25 +5,9 @@ import Form from './Form';
 import Table from './Table';
 
 function App() {
-  const [ currentData, setCurrentData ] = useState({
-    date: '',
-    km: '',
-    disabled: true,
-  });
-
   const [tableData, setTableData ] = useState([]);
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setCurrentData(prevData => {
-      return {
-        ...prevData,
-        [name]: value,
-      }
-    })
-  }
-
-  const handleSubmit = e => {
+  const handleSubmit = (e, currentData) => {
     e.preventDefault();
     setTableData(prevData => {
       
@@ -35,7 +19,8 @@ function App() {
             return {...row, km: parseInt(row.km) + parseInt(currentData.km)}
           }
           return {...row}
-        })
+        });
+
         return shouldAddCurrentData ? [...newData, {...currentData, id: shortid.generate()}] : [...newData];
       }
 
@@ -49,25 +34,21 @@ function App() {
     })
   }
 
-  const handleSwitchEdit = (e, id) => {
+  const handleInputChange = (e, id) => {
     e.preventDefault();
-    setTableData(prevData => {
-      return prevData.map(row => {
-        if(row.id === id) {
-          return {...row, disabled: !row.disabled}
-        }
-        return {...row}
-      });
-    })
-  }
+    const {value, name} = e.currentTarget;
 
-  const handleInputEdit = (e, id) => {
-    const {value, name} = e.target;
     setTableData(prevData => {
       return prevData.map(row => {
         if(row.id === id) {
+          //Если нажата кнопка-переключатель Edit, переключаем значение disabled для строки таблицы
+          if (name === 'switch-edit') {
+            return {...row, disabled: !row.disabled};
+          }
+          //Иначе устанавливаем новое значение из поля input
           return {...row, [name]: value}
         }
+        //Остальные строки с другим id пропускаем
         return {...row}
       });
     })
@@ -75,8 +56,8 @@ function App() {
 
   return (
     <div className="App">
-      <Form handleChange={handleChange} handleSubmit={handleSubmit} currentData={currentData} />
-      <Table tableData={tableData} handleDelete={handleDelete} handleSwitchEdit={handleSwitchEdit} handleInputEdit={handleInputEdit} />
+      <Form handleSubmit={handleSubmit} />
+      <Table tableData={tableData} handleDelete={handleDelete} handleInputChange={handleInputChange} />
     </div>
   );
 }
