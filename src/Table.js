@@ -37,7 +37,7 @@ const Table = props => {
                       <p>{row.km}</p>
                     </td>
                     <td>
-                      <button disabled name="switch-edit" className="edit" onClick={e => handleEdit(e, row.id)} aria-label='edit'>
+                      <button name="switch-edit" className="edit" onClick={e => handleEdit(e, row.id)} aria-label='edit'>
                         <FontAwesomeIcon icon={faEdit} />
                       </button>
                       <button className="delete" onClick={e => handleDelete(e, row.id)} aria-label='delete'>
@@ -61,12 +61,11 @@ Table.propTypes = {
         PropTypes.string,
         PropTypes.number,
       ]).isRequired,
-      disabled: PropTypes.bool.isRequired,
       id: PropTypes.string.isRequired,
     }).isRequired,
   ),
   handleDelete: PropTypes.func.isRequired, 
-  handleInputChange: PropTypes.func.isRequired,
+  handleEdit: PropTypes.func.isRequired,
 };
 
 export default Table;

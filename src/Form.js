@@ -1,14 +1,22 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 const Form = props => {
-  const {handleSubmit} = props;
+  const {handleSubmit, editModeData} = props;
 
   const [ currentData, setCurrentData ] = useState({
     date: '',
     km: '',
-    disabled: true,
   });
+
+  useEffect(() => {
+    if (Object.keys(editModeData).length) {
+      setCurrentData({
+        date: editModeData.date,
+        km: editModeData.km,
+      })
+    }
+  }, [editModeData]);
 
   const handleChange = e => {
     const { name, value } = e.target;

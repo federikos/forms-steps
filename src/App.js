@@ -7,6 +7,7 @@ import Table from './Table';
 function App() {
   const [tableData, setTableData ] = useState([]);
   const [editMode, setEditMode] = useState(false);
+  const [editModeData, setEditModeData] = useState({});
 
   const handleSubmit = (e, currentData) => {
     e.preventDefault();
@@ -37,20 +38,24 @@ function App() {
     })
   }
 
-  // const handleEdit = (e, id) => {
-  //   e.preventDefault();
-  //   setEditMode(prevEditMode => !prevEditMode);
-  // }
+  const handleEdit = (e, id) => {
+    e.preventDefault();
+    if (!editMode) {
+      setEditModeData(tableData.filter(row => row.id === id)[0]);
+    }
+    setEditMode(prevEditMode => !prevEditMode);
+  }
 
   return (
     <div className="App">
       <Form 
-      handleSubmit={handleSubmit} 
+      handleSubmit={handleSubmit}
+      editModeData={editModeData}
       />
       <Table 
       tableData={tableData} 
       handleDelete={handleDelete} 
-      // handleEdit={handleEdit} 
+      handleEdit={handleEdit} 
       />
     </div>
   );
